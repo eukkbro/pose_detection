@@ -137,11 +137,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     // onDestroy()
     override fun onDestroy() {
         super.onDestroy()
+
         // 모델 자원 해제
         model.close()
+
     } // onDestroy()
 
 
