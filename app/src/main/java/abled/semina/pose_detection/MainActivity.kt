@@ -27,6 +27,9 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 
 class MainActivity : AppCompatActivity() {
 
+    // Sam의 테스트 변수
+    val sam = "샘의 테스트 변수"
+
     // 원 그리기 위한 Paint 객체
     val paint = Paint()
 
