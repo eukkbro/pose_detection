@@ -1,6 +1,5 @@
 package abled.semina.pose_detection
 
-import abled.semina.pose_detection.ml.AutoModel1
 import abled.semina.pose_detection.ml.AutoModel4
 import android.annotation.SuppressLint
 import android.content.Context
@@ -17,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Log
 import android.view.Surface
 import android.view.TextureView
 import android.widget.ImageView
@@ -137,11 +135,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    // onDestroy()
     override fun onDestroy() {
         super.onDestroy()
+
         // 모델 자원 해제
         model.close()
-    }
+
+    } // onDestroy()
+
 
     @SuppressLint("MissingPermission")
     fun open_camera(){
