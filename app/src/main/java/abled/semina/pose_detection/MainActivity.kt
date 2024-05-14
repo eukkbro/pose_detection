@@ -59,6 +59,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        var stand = false
+        var sit = false
+        var count = 0
+
         // 필요한 권한 요청
         get_permissions()
 
@@ -132,6 +136,8 @@ class MainActivity : AppCompatActivity() {
                 var x = 0
                 var angle: Double? = 0.0
 
+                Log.d("카운트", "onSurfaceTextureUpdated: $count")
+
                 // 찍히는 point 17 개 배열 51 개 배열안에 한 인덱스가 3개씩 차지.
                 // 엉덩이 포인트 : 왼쪽 궁둥이 11 오른쪽 궁둥이 12 환산하면 33 , 36
                 // 무릎 포인트 : 왼쪽 13 오른쪽 14 환산하면 39 , 42
@@ -146,8 +152,14 @@ class MainActivity : AppCompatActivity() {
 
                     if(outputFeature0.get(x+2) > 0.45){
 
-//                        Log.d("캔버스 함수 여기서 사용됨", "onSurfaceTextureUpdated: x : $x , h : $h , w : $w")
+                        if(stand && sit) {
 
+                            stand = false
+                            sit = false
+
+                        }
+
+//                        Log.d("캔버스 함수 여기서 사용됨", "onSurfaceTextureUpdated: x : $x , h : $h , w : $w")
 
                         // 각 원들의 중심 좌표
                         canvas.drawCircle(outputFeature0.get(x+1)*w, outputFeature0.get(x)*h, 10f, paint)
@@ -155,6 +167,20 @@ class MainActivity : AppCompatActivity() {
                         angle = calculateAngle(outputFeature0.get(34)*w,outputFeature0.get(33)*h,
                             outputFeature0.get(40)*w,outputFeature0.get(39)*h,
                             outputFeature0.get(46)*w,outputFeature0.get(45)*h)
+
+                        // 각도가 일정범위안에 들어왔을때 로그 찍힘.
+                        if(angle!! <= 120.00 && angle >= 70.00){
+
+                            sit = true
+
+                        }
+
+                        if(angle!! >= 160 && angle <= 180 && sit) {
+
+                            stand = true
+                            count ++
+
+                        }
 
                     }
 
@@ -165,18 +191,6 @@ class MainActivity : AppCompatActivity() {
                 // 수정된 비트맵 표시
                 imageView.setImageBitmap(mutable)
 
-                // 각도가 일정범위안에 들어왔을때 로그 찍힘.
-                if(angle!! <= 120.00 && angle >= 70.00){
-
-                    var count = 0
-                    count ++
-
-
-                    if(count == 5){
-                        Log.d("카운트 됐음", "onSurfaceTextureUpdated: ")
-                    }
-
-                }
             }
 
         }
