@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // 운동 카운트 관련 변수
         var stand = false
         var sit = false
         var count = 0
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         handlerThread = HandlerThread("videoThread")
         handlerThread.start()
         handler = Handler(handlerThread.looper)
+
 
         // 원 그리기 위한 Paint 색상 설정
         paint.color = Color.YELLOW
