@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Log
 import android.view.Surface
 import android.view.TextureView
 import android.widget.ImageView
@@ -122,17 +123,32 @@ class MainActivity : AppCompatActivity() {
 
                 var h = bitmap.height
                 var w = bitmap.width
+
                 var x = 0
 
+
+                //
+
+                // 찍히는 point 17 개
                 while(x <= 49){
+
                     if(outputFeature0.get(x+2) > 0.45){
+
+                        Log.d("캔버스 함수 여기서 사용됨", "onSurfaceTextureUpdated: x : $x , h : $h , w : $w")
+
+                        // 각 원들의 중심 좌표
                         canvas.drawCircle(outputFeature0.get(x+1)*w, outputFeature0.get(x)*h, 10f, paint)
+
+
                     }
+
                     x+=3
+
                 }
 
                 // 수정된 비트맵 표시
                 imageView.setImageBitmap(mutable)
+
             }
 
         }
