@@ -25,6 +25,11 @@ import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
+import java.lang.Math.acos
+import java.lang.Math.sqrt
+import kotlin.math.acos
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class MainActivity : AppCompatActivity() {
 
@@ -125,20 +130,31 @@ class MainActivity : AppCompatActivity() {
                 var w = bitmap.width
 
                 var x = 0
+                var angle: Double? = 0.0
 
+                // 찍히는 point 17 개 배열 51 개 배열안에 한 인덱스가 3개씩 차지.
+                // 엉덩이 포인트 : 왼쪽 궁둥이 11 오른쪽 궁둥이 12 환산하면 33 , 36
+                // 무릎 포인트 : 왼쪽 13 오른쪽 14 환산하면 39 , 42
+                // 어깨 포인트 : 왼쪽 5 오른쪽 6 환산하면 15 , 18
 
-                //
+                // 왼쪽 발목 = x == 45
+                // 왼쪽 어깨 = X == 15일때
+                // 왼쪽 엉덩이 = X == 33 일때
+                // 왼쪽 무릎 = X == 39 일때
 
-                // 찍히는 point 17 개
                 while(x <= 49){
 
                     if(outputFeature0.get(x+2) > 0.45){
 
-                        Log.d("캔버스 함수 여기서 사용됨", "onSurfaceTextureUpdated: x : $x , h : $h , w : $w")
+//                        Log.d("캔버스 함수 여기서 사용됨", "onSurfaceTextureUpdated: x : $x , h : $h , w : $w")
+
 
                         // 각 원들의 중심 좌표
                         canvas.drawCircle(outputFeature0.get(x+1)*w, outputFeature0.get(x)*h, 10f, paint)
 
+                        angle = calculateAngle(outputFeature0.get(34)*w,outputFeature0.get(33)*h,
+                            outputFeature0.get(40)*w,outputFeature0.get(39)*h,
+                            outputFeature0.get(46)*w,outputFeature0.get(45)*h)
 
                     }
 
@@ -149,6 +165,18 @@ class MainActivity : AppCompatActivity() {
                 // 수정된 비트맵 표시
                 imageView.setImageBitmap(mutable)
 
+                // 각도가 일정범위안에 들어왔을때 로그 찍힘.
+                if(angle!! <= 120.00 && angle >= 70.00){
+
+                    var count = 0
+                    count ++
+
+
+                    if(count == 5){
+                        Log.d("카운트 됐음", "onSurfaceTextureUpdated: ")
+                    }
+
+                }
             }
 
         }
@@ -216,4 +244,32 @@ class MainActivity : AppCompatActivity() {
         // 카메라 권한이 부여되지 않은 경우 다시 요청
         if(grantResults[0] != PackageManager.PERMISSION_GRANTED) get_permissions()
     }
+
+    // 각도 구하는 메서드
+    fun calculateAngle(x1: Float,y1: Float,x2: Float,y2: Float,x3: Float, y3: Float): Double? {
+        val vec1 = Pair(x1 - x2, y1 - y2)
+        val vec2 = Pair(x3 - x2, y3 - y2)
+
+        // 두 벡터의 내적을 계산합니다.
+        val dotProduct = vec1.first * vec2.first + vec1.second * vec2.second
+
+        // 각 벡터의 크기를 계산합니다.
+        val magnitude1 = sqrt(vec1.first.pow(2) + vec1.second.pow(2))
+        val magnitude2 = sqrt(vec2.first.pow(2) + vec2.second.pow(2))
+
+        if (magnitude1 == 0.0f || magnitude2 == 0.0f) {
+            return null
+        }
+
+        val cosTheta = dotProduct / (magnitude1 * magnitude2)
+
+        // 아크코사인을 사용하여 각도를 계산합니다.
+        val angleRad = acos(cosTheta)
+
+        // 라디안에서 도로 변환합니다.
+        val angleDeg = Math.toDegrees(angleRad.toDouble())
+
+        return angleDeg
+    }
+
 }
